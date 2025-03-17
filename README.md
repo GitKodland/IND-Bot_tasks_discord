@@ -1,16 +1,16 @@
-#  Бот-планировщик задач
+# Bot Pengelola Tugas
 
-### Основные функции:
-- Создание и удаление задач.
-- Поддержка списка задач для отдельных пользователей.
-- Отображение текущих задач.
+### Fungsi Utama:
+- Membuat dan menghapus tugas.
+- Mendukung daftar tugas untuk pengguna individu.
+- Menampilkan tugas saat ini.
 
-### Основные команды:
+### Perintah Utama:
 
-!task add [описание задачи] - добавляет новую задачу.
+!task add [deskripsi tugas] - menambahkan tugas baru.
 
-!task remove [ID задачи] - удаляет задачу.
+!task remove [ID tugas] - menghapus tugas.
 
-!task list - показывает список текущих задач.
+!task list - menampilkan daftar tugas saat ini.
 
-!info - выводит информацию о боте
+!info - menampilkan informasi tentang bot
