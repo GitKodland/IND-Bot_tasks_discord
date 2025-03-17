@@ -2,77 +2,77 @@ import discord
 from discord.ext import commands
 from config import TOKEN
 
-# Создаем объект intents для бота, чтобы бот мог получать сообщения
+# Membuat objek intents untuk bot agar bot dapat menerima pesan
 intents = discord.Intents.default()
 intents.messages = True
 
-# Создаем объект бота с префиксом '!' для команд
+# Membuat objek bot dengan prefix '!' untuk perintah
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# Словарь для хранения задач пользователей. Ключ - ID пользователя, значение - список задач
+# Dictionary untuk menyimpan tugas pengguna. Kunci - ID pengguna, nilai - daftar tugas
 tasks = {}
 
-# Событие, которое срабатывает при успешном запуске бота
+# Event yang terpicu ketika bot berhasil dijalankan
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
 
-# Команда для управления задачами
+# Perintah untuk mengelola tugas
 @bot.command()
 async def task(ctx, action=None, *, content=None):
-    # Получаем ID пользователя, вызвавшего команду
+    # Mendapatkan ID pengguna yang memanggil perintah
     user_id = ctx.author.id
-    # Если у пользователя еще нет задач, создаем для него пустой список задач
+    # Jika pengguna belum memiliki tugas, buat daftar tugas kosong untuknya
     if user_id not in tasks:
         tasks[user_id] = []
 
-    # Обработка команды для добавления задачи
+    # Memproses perintah untuk menambahkan tugas
     if action == 'add':
-        task_id = len(tasks[user_id]) + 1  # Генерируем ID задачи
-        tasks[user_id].append({'id': task_id, 'content': content})  # Добавляем задачу в список пользователя
-        await ctx.send(f'Задача добавлена: {content} (ID: {task_id})')  # Отправляем подтверждение
+        task_id = len(tasks[user_id]) + 1  # Menghasilkan ID tugas
+        tasks[user_id].append({'id': task_id, 'content': content})  # Menambahkan tugas ke daftar pengguna
+        await ctx.send(f'Tugas ditambahkan: {content} (ID: {task_id})')  # Mengirim konfirmasi
 
-    # Обработка команды для удаления задачи
+    # Memproses perintah untuk menghapus tugas
     elif action == 'remove':
-        if content and content.isdigit():  # Проверяем, что передан корректный ID задачи
-            task_id = int(content)  # Преобразуем ID задачи в число
-            task_list = tasks[user_id]  # Получаем список задач пользователя
-            # Ищем задачу по ID
+        if content and content.isdigit():  # Memeriksa apakah ID tugas yang diberikan valid
+            task_id = int(content)  # Mengubah ID tugas menjadi angka
+            task_list = tasks[user_id]  # Mendapatkan daftar tugas pengguna
+            # Mencari tugas berdasarkan ID
             task_to_remove = next((task for task in task_list if task['id'] == task_id), None)
             if task_to_remove:
-                task_list.remove(task_to_remove)  # Удаляем задачу из списка
-                await ctx.send(f'Задача с ID {task_id} удалена.')  # Отправляем подтверждение
+                task_list.remove(task_to_remove)  # Menghapus tugas dari daftar
+                await ctx.send(f'Tugas dengan ID {task_id} telah dihapus.')  # Mengirim konfirmasi
             else:
-                await ctx.send(f'Задача с ID {task_id} не найдена.')  # Сообщаем, если задача не найдена
+                await ctx.send(f'Tugas dengan ID {task_id} tidak ditemukan.')  # Memberi tahu jika tugas tidak ditemukan
         else:
-            await ctx.send('Укажите правильный ID задачи для удаления.')  # Сообщаем об ошибке
+            await ctx.send('Harap tentukan ID tugas yang valid untuk dihapus.')  # Memberi tahu tentang kesalahan
 
-    # Обработка команды для отображения списка задач
+    # Memproses perintah untuk menampilkan daftar tugas
     elif action == 'list':
-        task_list = tasks[user_id]  # Получаем список задач пользователя
+        task_list = tasks[user_id]  # Mendapatkan daftar tugas pengguna
         if task_list:
-            # Формируем ответ с перечнем задач
-            response = "Ваши текущие задачи:\n"
-            response += "\n".join([f"ID: {task['id']}, Описание: {task['content']}" for task in task_list])
+            # Membuat respons dengan daftar tugas
+            response = "Tugas Anda saat ini:\n"
+            response += "\n".join([f"ID: {task['id']}, Deskripsi: {task['content']}" for task in task_list])
         else:
-            response = "У вас нет текущих задач."  # Сообщаем, если задач нет
-        await ctx.send(response)  # Отправляем список задач
+            response = "Anda tidak memiliki tugas saat ini."  # Memberi tahu jika tidak ada tugas
+        await ctx.send(response)  # Mengirim daftar tugas
 
-    # Обработка неизвестной команды
+    # Memproses perintah yang tidak dikenal
     else:
-        await ctx.send('Неизвестное действие. Пожалуйста, используйте add, remove или list.')
+        await ctx.send('Tindakan tidak dikenal. Silakan gunakan add, remove, atau list.')
 
-# Отдельная команда для отображения справочной информации
+# Perintah terpisah untuk menampilkan informasi bantuan
 @bot.command()
 async def info(ctx):
     response = (
-        "Доступные команды:\n"
-        "!task add [описание задачи] - добавляет новую задачу.\n"
-        "!task remove [ID задачи] - удаляет задачу по указанному ID.\n"
-        "!task list - показывает список текущих задач.\n"
-        "!info - отображает эту справочную информацию."
+        "Perintah yang tersedia:\n"
+        "!task add [deskripsi tugas] - menambahkan tugas baru.\n"
+        "!task remove [ID tugas] - menghapus tugas berdasarkan ID.\n"
+        "!task list - menampilkan daftar tugas saat ini.\n"
+        "!info - menampilkan informasi bantuan ini."
     )
-    await ctx.send(response)  # Отправляем справочную информацию
+    await ctx.send(response)  # Mengirim informasi bantuan
 
-# Запуск бота с вашим токеном
+# Menjalankan bot dengan token Anda
 bot.run(TOKEN)
